@@ -1,0 +1,816 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Aprende Probabilidad Avanzado</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   <style>
+       body {
+           font-family: 'Inter', sans-serif;
+           background-color: #f0f9ff; /* Light blue background */
+           color: #334155; /* Slate 700 */
+       }
+       .concept-card {
+           background-color: white;
+           border-radius: 0.75rem; /* 12px */
+           box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+           padding: 1.5rem; /* 24px */
+           margin-bottom: 2rem; /* 32px */
+           transition: transform 0.2s ease-in-out;
+       }
+       .concept-card:hover {
+           transform: translateY(-5px);
+       }
+       .exercise {
+           background-color: #f1f5f9; /* Slate 100 */
+           border: 1px solid #cbd5e1; /* Slate 300 */
+           border-radius: 0.5rem; /* 8px */
+           padding: 1.25rem; /* 20px */
+           margin-top: 1.5rem; /* 24px */
+       }
+       .feedback {
+           margin-top: 0.75rem; /* 12px */
+           padding: 0.75rem; /* 12px */
+           border-radius: 0.375rem; /* 6px */
+           font-weight: 600;
+       }
+       .feedback.correct {
+           background-color: #ecfdf5; /* Green 50 */
+           color: #059669; /* Green 600 */
+           border-left: 4px solid #10b981; /* Green 500 */
+       }
+       .feedback.incorrect {
+           background-color: #fff1f2; /* Rose 50 */
+           color: #e11d48; /* Rose 600 */
+           border-left: 4px solid #f43f5e; /* Rose 500 */
+       }
+       .feedback.hint {
+           background-color: #fffbeb; /* Amber 50 */
+           color: #d97706; /* Amber 600 */
+           border-left: 4px solid #f59e0b; /* Amber 500 */
+       }
+       .btn {
+           padding: 0.625rem 1.25rem; /* 10px 20px */
+           border-radius: 0.375rem; /* 6px */
+           font-weight: 600;
+           cursor: pointer;
+           transition: background-color 0.2s ease, transform 0.1s ease;
+           display: inline-flex;
+           align-items: center;
+       }
+       .btn:hover {
+           transform: translateY(-1px);
+       }
+       .btn i {
+           margin-right: 0.5rem;
+       }
+       .btn-primary {
+           background-color: #6366f1; /* Indigo 500 */
+           color: white;
+       }
+       .btn-primary:hover {
+           background-color: #4f46e5; /* Indigo 600 */
+       }
+       .input-field {
+           border: 1px solid #94a3b8; /* Slate 400 */
+           border-radius: 0.375rem; /* 6px */
+           padding: 0.625rem; /* 10px */
+           width: 100%;
+           transition: border-color 0.2s ease, box-shadow 0.2s ease;
+       }
+       .input-field:focus {
+           border-color: #6366f1; /* Indigo 500 */
+           box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+           outline: none;
+       }
+       h1, h2, h3 {
+           color: #4338ca; /* Indigo 700 */
+       }
+       h1 {
+           font-size: 2.5rem; /* 40px */
+           font-weight: 800;
+            border-bottom: 3px solid #818cf8; /* Indigo 400 */
+           padding-bottom: 0.75rem;
+       }
+       h2 {
+           font-size: 1.875rem; /* 30px */
+           font-weight: 700;
+           margin-bottom: 1.25rem; /* 20px */
+           padding-bottom: 0.5rem; /* 8px */
+           border-bottom: 2px solid #a5b4fc; /* Indigo 300 */
+       }
+       h3 {
+           font-size: 1.25rem; /* 20px */
+           font-weight: 600;
+           color: #4f46e5; /* Indigo 600 */
+           margin-top: 1.5rem; /* 24px */
+           margin-bottom: 0.75rem; /* 12px */
+       }
+       .accordion-item {
+           border: 1px solid #e2e8f0; /* Slate 200 */
+           border-radius: 0.5rem;
+           margin-bottom: 0.5rem;
+           overflow: hidden;
+       }
+       .accordion-header {
+           cursor: pointer;
+           padding: 1rem 1.25rem; /* 16px 20px */
+           background-color: #eef2ff; /* Indigo 50 */
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           font-weight: 600;
+           color: #4f46e5; /* Indigo 600 */
+       }
+       .accordion-header:hover {
+           background-color: #e0e7ff; /* Indigo 100 */
+       }
+       .accordion-content {
+           padding: 1.25rem; /* 20px */
+           background-color: #f8fafc; /* Slate 50 */
+           display: none;
+           border-top: 1px solid #e2e8f0; /* Slate 200 */
+       }
+       .accordion-icon {
+           transition: transform 0.3s ease;
+       }
+       .accordion-header.active .accordion-icon {
+           transform: rotate(180deg);
+       }
+       .math {
+           font-family: 'Georgia', serif;
+           font-style: italic;
+           color: #5b21b6; /* Violet 700 */
+       }
+       .example {
+           background-color: #f0fdf4; /* Green 50 */
+           border-left: 4px solid #22c55e; /* Green 500 */
+           padding: 1rem;
+           margin: 1rem 0;
+           border-radius: 0.25rem;
+       }
+       .venn-diagram {
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           margin: 1.5rem 0;
+       }
+       .venn-diagram svg {
+           max-width: 300px;
+           height: auto;
+       }
+       .tree-diagram { 
+           margin: 1.5rem 0;
+           padding: 1rem;
+           border: 1px dashed #94a3b8; /* Slate 400 */
+           border-radius: 0.5rem;
+           background-color: #f8fafc; /* Slate 50 */
+           font-size: 0.9em;
+       }
+       .tree-node {
+           margin-left: 20px;
+           padding-left: 15px;
+           border-left: 1px solid #cbd5e1; /* Slate 300 */
+           position: relative;
+           padding-top: 5px;
+           padding-bottom: 5px;
+       }
+       .tree-node::before { /* Conector horizontal */
+           content: '';
+           position: absolute;
+           top: 15px; /* Ajustar para centrar con el texto */
+           left: 0;
+           width: 15px;
+           height: 1px;
+           background-color: #cbd5e1; /* Slate 300 */
+       }
+       .tree-node:last-child {
+            border-left: 1px solid #cbd5e1; /* Slate 300 */
+       }
+        .tree-branch-label {
+           display: inline-block;
+           margin-bottom: 0.25rem;
+           font-weight: 500;
+       }
+       .tree-path-prob {
+           font-style: italic;
+           color: #5b21b6; /* Violet 700 */
+           font-size: 0.9em;
+       }
+   </style>
+</head>
+<body class="p-4 md:p-8">
+   <div class="container mx-auto max-w-5xl">
+       <header class="text-center mb-12">
+           <h1 class="text-4xl md:text-5xl"><i class="fas fa-dice-d20 mr-3 text-indigo-500"></i>Probabilidad Total: Domina el Azar</h1>
+           <p class="text-lg text-slate-600 mt-3">Una guía interactiva completa desde lo básico hasta conceptos avanzados.</p>
+       </header>
+
+       <nav class="mb-8 p-4 bg-white rounded-lg shadow-md">
+           <h3 class="text-lg font-semibold mb-2 text-indigo-600">Navegación Rápida:</h3>
+           <ul class="flex flex-wrap gap-2">
+               <li><a href="#conceptos-basicos" class="btn bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm"><i class="fas fa-lightbulb"></i>Básicos</a></li>
+               <li><a href="#tipos-sucesos" class="btn bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm"><i class="fas fa-tags"></i>Tipos Sucesos</a></li>
+               <li><a href="#operaciones-sucesos" class="btn bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm"><i class="fas fa-calculator"></i>Operaciones</a></li>
+               <li><a href="#leyes-morgan" class="btn bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm"><i class="fas fa-project-diagram"></i>Leyes de Morgan</a></li>
+               <li><a href="#regla-laplace" class="btn bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm"><i class="fas fa-ruler-combined"></i>Regla de Laplace</a></li>
+               <li><a href="#probabilidad-condicionada" class="btn bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm"><i class="fas fa-question-circle"></i>P. Condicionada</a></li>
+               <li><a href="#sucesos-independientes-dependientes" class="btn bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm"><i class="fas fa-link"></i>Independencia</a></li>
+               <li><a href="#diagramas-arbol" class="btn bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm"><i class="fas fa-sitemap"></i>Diagramas Árbol</a></li>
+               <li><a href="#glosario" class="btn bg-teal-100 text-teal-700 hover:bg-teal-200 text-sm"><i class="fas fa-book"></i>Glosario</a></li>
+               <li><a href="#quiz-final" class="btn bg-amber-100 text-amber-700 hover:bg-amber-200 text-sm"><i class="fas fa-graduation-cap"></i>Quiz Final</a></li>
+           </ul>
+       </nav>
+
+       <section id="conceptos-basicos" class="concept-card">
+           <h2><i class="fas fa-lightbulb mr-2"></i>1. Conceptos Básicos de Probabilidad</h2>
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-atom mr-2"></i>Experimento Aleatorio y Determinista</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <p>Un <strong>experimento aleatorio</strong> es aquel cuyo resultado no se puede predecir con certeza, aunque se conozcan todos los resultados posibles. Depende del azar. Ejemplo: lanzar un dado <i class="fas fa-dice-three"></i>.</p>
+                   <p class="mt-2">Un <strong>experimento determinista</strong> es aquel en el que se puede predecir el resultado si se repite en las mismas condiciones, ya que no depende del azar. Ejemplo: calentar agua a 100°C <i class="fas fa-temperature-high"></i> (siempre hierve a esa temperatura a presión normal).</p>
+                   <div class="exercise">
+                       <h3>Ejercicio 1.1: Identifica el tipo de experimento</h3>
+                       <p class="mb-2">"Predecir si lloverá mañana basándose en un modelo meteorológico complejo". ¿Es principalmente aleatorio o determinista?</p>
+                       <select id="ex1_1_tipo" class="input-field mb-2">
+                           <option value="">Selecciona una opción</option>
+                           <option value="determinista">Determinista</option>
+                           <option value="aleatorio">Aleatorio</option>
+                       </select>
+                       <button onclick="checkEx1_1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex1_1" class="feedback"></div>
+                   </div>
+               </div>
+           </div>
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-shapes mr-2"></i>Espacio Muestral (E) y Sucesos</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <p>El <strong>espacio muestral (E)</strong> es el conjunto de todos los resultados posibles de un experimento aleatorio. Se representa con la letra E. Ejemplo: Al lanzar una moneda, E = {Cara, Cruz}.</p>
+                   <p class="mt-2">Un <strong>suceso</strong> es cualquier subconjunto del espacio muestral. Se suelen denotar con letras mayúsculas (A, B, ...).</p>
+                   <ul class="list-disc list-inside mt-2 pl-4">
+                       <li><strong>Suceso Elemental:</strong> Formado por un único resultado. Ej: A = "sacar un 3" al lanzar un dado.</li>
+                       <li><strong>Suceso Compuesto:</strong> Formado por varios resultados. Ej: B = "sacar par" ({2, 4, 6}).</li>
+                   </ul>
+                   <div class="example">
+                       <p><strong>Ejemplo resuelto:</strong> Lanzamos un dado de 4 caras (tetraedro) numerado del 1 al 4.</p>
+                       <p>Espacio Muestral E = {1, 2, 3, 4}.</p>
+                       <p>Suceso A = "Obtener un número par" = {2, 4} (Compuesto).</p>
+                       <p>Suceso B = "Obtener un 1" = {1} (Elemental).</p>
+                   </div>
+                   <div class="exercise">
+                       <h3>Ejercicio 1.2: Espacio Muestral y Suceso</h3>
+                       <p class="mb-2">Se extrae una carta de una baraja española de 40 cartas. El suceso A es "extraer un As". ¿Cuántos elementos tiene el suceso A (casos favorables)?</p>
+                       <input type="text" id="ex1_2_suceso_cartas" class="input-field mb-2" placeholder="Número de Ases">
+                       <button onclick="checkEx1_2()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex1_2" class="feedback"></div>
+                   </div>
+               </div>
+           </div>
+       </section>
+
+       <section id="tipos-sucesos" class="concept-card">
+           <h2><i class="fas fa-tags mr-2"></i>2. Tipos de Sucesos Especiales</h2>
+            <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-ban mr-2"></i>Imposible, <i class="fas fa-shield-alt mr-2"></i>Seguro, <i class="fas fa-yin-yang mr-2"></i>Contrario</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <ul class="list-disc list-inside pl-4 space-y-2">
+                       <li><strong>Suceso Imposible (Ø):</strong> Nunca ocurre. P(Ø) = 0. Ej: "Sacar un 7" en un dado de 6 caras.</li>
+                       <li><strong>Suceso Seguro (E):</strong> Ocurre siempre. P(E) = 1. Ej: "Sacar un número < 7" en un dado de 6 caras.</li>
+                       <li><strong>Suceso Contrario (Ā o A<sup>c</sup>):</strong> Ocurre cuando NO ocurre A. P(Ā) = 1 - P(A). Ej: Si A = "sacar par", Ā = "sacar impar".</li>
+                   </ul>
+                   <div class="exercise">
+                       <h3>Ejercicio 2.1: Verdadero o Falso con Justificación</h3>
+                       <p class="mb-2">Afirmación: "Si A es un suceso cualquiera, A y su contrario Ā son siempre sucesos incompatibles."</p>
+                       <select id="ex2_1_vf" class="input-field mb-2">
+                           <option value="">Selecciona</option>
+                           <option value="verdadero">Verdadero</option>
+                           <option value="falso">Falso</option>
+                       </select>
+                       <textarea id="ex2_1_justificacion" class="input-field mb-2" placeholder="Escribe tu justificación aquí..."></textarea>
+                       <button onclick="checkEx2_1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex2_1" class="feedback"></div>
+                   </div>
+               </div>
+           </div>
+            <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-handshake-slash mr-2"></i>Compatibles e <i class="fas fa-people-arrows mr-2"></i>Incompatibles</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <ul class="list-disc list-inside pl-4 space-y-2">
+                       <li><strong>Sucesos Incompatibles (o mutuamente excluyentes):</strong> No pueden ocurrir a la vez. Su intersección es vacía (A ∩ B = Ø). Ej: "Sacar par" y "sacar un 5" en un dado.</li>
+                       <li><strong>Sucesos Compatibles:</strong> Pueden ocurrir a la vez (A ∩ B ≠ Ø). Ej: "Sacar par" y "sacar > 3" (el 4 y el 6 cumplen ambos).</li>
+                   </ul>
+               </div>
+           </div>
+       </section>
+
+       <section id="operaciones-sucesos" class="concept-card">
+           <h2><i class="fas fa-calculator mr-2"></i>3. Operaciones con Sucesos</h2>
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-union mr-2"></i>Unión (A U B) e <i class="fas fa-intersection mr-2"></i>Intersección (A ∩ B)</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <p><strong>Unión (A U B):</strong> Suceso formado por los elementos de A, o de B, o de ambos. Se lee "A o B".</p>
+                   <p class="mt-1"><strong>Intersección (A ∩ B):</strong> Suceso formado por los elementos comunes a A y B. Se lee "A y B".</p>
+                   
+                   <div class="venn-diagram">
+                       <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                           <title>Diagrama de Venn para Unión e Intersección</title>
+                           <rect x="0" y="0" width="200" height="120" fill="#f0f9ff" stroke="#94a3b8" stroke-width="1"/>
+                           <text x="5" y="15" font-size="10" fill="#334155">E</text>
+                           <circle cx="75" cy="60" r="40" fill="#a5b4fc" fill-opacity="0.5" stroke="#6366f1" stroke-width="1.5"/>
+                           <text x="70" y="65" font-size="12" fill="#1e1b4b">A</text>
+                           <circle cx="125" cy="60" r="40" fill="#818cf8" fill-opacity="0.5" stroke="#4f46e5" stroke-width="1.5"/>
+                           <text x="120" y="65" font-size="12" fill="#1e1b4b">B</text>
+                           <path d="M100,32.11A40,40 0 0 0 100,87.88A40,40 0 0 0 100,32.11Z" fill="#6366f1" fill-opacity="0.7"/>
+                           <text x="95" y="65" font-size="10" fill="white">A∩B</text>
+                           <text x="40" y="30" font-size="9" fill="#334155">A U B (todo lo coloreado)</text>
+                       </svg>
+                   </div>
+                   <p class="text-sm text-center text-slate-500">Visualización de A U B (toda el área de ambos círculos) y A ∩ B (la superposición).</p>
+
+                   <div class="example">
+                       <p><strong>Ejemplo resuelto:</strong> En un dado de 6 caras, A="sacar par"={2,4,6}, B="sacar múltiplo de 3"={3,6}.</p>
+                       <p>A U B = {2, 3, 4, 6} (los que son pares o múltiplos de 3 o ambos)</p>
+                       <p>A ∩ B = {6} (el único que es par Y múltiplo de 3)</p>
+                   </div>
+                   <div class="exercise">
+                       <h3>Ejercicio 3.1: Unión e Intersección</h3>
+                       <p class="mb-2">En una clase, 10 estudiantes juegan fútbol (F), 7 juegan baloncesto (B) y 3 juegan ambos deportes. ¿Cuántos estudiantes juegan al menos uno de los dos deportes (F U B)?</p>
+                       <input type="text" id="ex3_1_union_deportes" class="input-field mb-2" placeholder="Número de estudiantes">
+                       <button onclick="checkEx3_1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex3_1" class="feedback"></div>
+                       <p class="mt-3 mb-2 text-sm text-slate-500">Pista: Recuerda la fórmula P(A U B) = P(A) + P(B) - P(A ∩ B). Aunque aquí son números, no probabilidades, el principio de inclusión-exclusión es similar: |F U B| = |F| + |B| - |F ∩ B|.</p>
+                   </div>
+               </div>
+           </div>
+       </section>
+
+       <section id="leyes-morgan" class="concept-card">
+           <h2><i class="fas fa-project-diagram mr-2"></i>4. Leyes de Morgan</h2>
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-equals mr-2"></i>Formulaciones y Significado</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <p>Las Leyes de Morgan son muy útiles para trabajar con sucesos contrarios, uniones e intersecciones:</p>
+                   <ul class="list-disc list-inside pl-4 space-y-3 mt-2">
+                       <li><span class="math">$\overline{A \cup B} = \overline{A} \cap \overline{B}$</span><br>El contrario de "A o B" es "ni A ni B" (no A Y no B).</li>
+                       <li><span class="math">$\overline{A \cap B} = \overline{A} \cup \overline{B}$</span><br>El contrario de "A y B" es "no A o no B" (o ambos no ocurren).</li>
+                   </ul>
+                    <div class="venn-diagram">
+                       <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                           <title>Diagrama de Venn para Ley de Morgan (contrario de la unión)</title>
+                           <defs>
+                               <clipPath id="clipA"> <circle cx="75" cy="60" r="40"/> </clipPath>
+                               <clipPath id="clipB"> <circle cx="125" cy="60" r="40"/> </clipPath>
+                               <mask id="maskUnion">
+                                   <rect x="0" y="0" width="200" height="120" fill="white"/>
+                                   <circle cx="75" cy="60" r="40" fill="black"/>
+                                   <circle cx="125" cy="60" r="40" fill="black"/>
+                               </mask>
+                           </defs>
+                            <rect x="0" y="0" width="200" height="120" fill="#e0f2fe" stroke="#94a3b8" stroke-width="1"/> <text x="5" y="15" font-size="10" fill="#334155">E</text>
+                           
+                           <rect x="0" y="0" width="200" height="120" fill="#fca5a5" mask="url(#maskUnion)"/> <circle cx="75" cy="60" r="40" fill="none" stroke="#6366f1" stroke-width="1.5"/>
+                           <text x="70" y="65" font-size="12" fill="#1e1b4b">A</text>
+                           <circle cx="125" cy="60" r="40" fill="none" stroke="#4f46e5" stroke-width="1.5"/>
+                           <text x="120" y="65" font-size="12" fill="#1e1b4b">B</text>
+                           <text x="60" y="110" font-size="9" fill="#b91c1c">Área roja = $\overline{A \cup B}$</text>
+                       </svg>
+                   </div>
+                   <p class="text-sm text-center text-slate-500">Visualización de $\overline{A \cup B}$: el área fuera de ambos círculos.</p>
+                   <div class="example">
+                       <p><strong>Ejemplo:</strong> Sea A="llueve" y B="hace viento".<br>
+                       $\overline{A \cup B}$ significa "No (llueve o hace viento)" = "Ni llueve NI hace viento". Esto es $\overline{A} \cap \overline{B}$.</p>
+                   </div>
+                   <div class="exercise">
+                       <h3>Ejercicio 4.1: Aplicando Leyes de Morgan</h3>
+                       <p class="mb-2">Usando las Leyes de Morgan, ¿a qué es equivalente $\overline{\overline{A} \cup \overline{B}}$?</p>
+                       <input type="text" id="ex4_1_morgan" class="input-field mb-2" placeholder="Ej: A U B (usa U para unión, I para intersección, ~ para contrario)">
+                       <button onclick="checkEx4_1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex4_1" class="feedback"></div>
+                   </div>
+               </div>
+           </div>
+       </section>
+
+       <section id="regla-laplace" class="concept-card">
+           <h2><i class="fas fa-ruler-combined mr-2"></i>5. Regla de Laplace</h2>
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-balance-scale mr-2"></i>Casos Favorables / Casos Posibles</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <p>Si un experimento aleatorio es <strong>regular</strong> (todos sus sucesos elementales son equiprobables), la probabilidad de un suceso A es:</p>
+                   <p class="text-center font-semibold my-3 text-xl text-indigo-700">P(A) = (Número de casos favorables a A) / (Número de casos posibles)</p>
+                   <div class="example">
+                       <p><strong>Ejemplo:</strong> Sacar una carta de una baraja española (40 cartas). Probabilidad de sacar un Rey.</p>
+                       <p>Casos favorables (Reyes) = 4 (Rey de Oros, Copas, Espadas, Bastos)</p>
+                       <p>Casos posibles (Total de cartas) = 40</p>
+                       <p>P(Rey) = 4/40 = 1/10 = 0.1</p>
+                   </div>
+                   <div class="exercise">
+                       <h3>Ejercicio 5.1: Aplicando Laplace</h3>
+                       <p class="mb-2">Se lanza un dado de 6 caras. ¿Cuál es la probabilidad de obtener un número primo? (Considera que el 1 no es primo). Escribe la fracción irreducible o el decimal.</p>
+                       <input type="text" id="ex5_1_laplace" class="input-field mb-2" placeholder="Ej: 1/2 o 0.5">
+                       <button onclick="checkEx5_1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex5_1" class="feedback"></div>
+                   </div>
+               </div>
+           </div>
+       </section>
+
+       <section id="probabilidad-condicionada" class="concept-card">
+            <h2><i class="fas fa-question-circle mr-2"></i>6. Probabilidad Condicionada</h2>
+            <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-info-circle mr-2"></i>Definición y Fórmula</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <p>La probabilidad de que ocurra A, <strong>sabiendo que ya ha ocurrido B</strong>, se llama probabilidad condicionada P(A|B).</p>
+                   <p class="text-center font-semibold my-3 text-xl text-indigo-700">P(A|B) = P(A ∩ B) / P(B) <span class="text-sm ml-2">(si P(B) > 0)</span></p>
+                   <div class="example">
+                       <p><strong>Ejemplo:</strong> En una clase hay 10 chicos y 15 chicas. 5 chicos y 10 chicas tienen el pelo castaño. Se elige un estudiante al azar y resulta ser chica (suceso B). ¿Cuál es la probabilidad de que tenga el pelo castaño (suceso A), sabiendo que es chica?</p>
+                       <p>Total estudiantes = 25. Chicas = 15. Chicas con pelo castaño = 10.</p>
+                       <p>P(Castaño | Chica) = (Número de chicas con pelo castaño) / (Número total de chicas) = 10 / 15 = 2/3.</p>
+                       <p>Usando la fórmula: P(Chica) = 15/25. P(Castaño ∩ Chica) = 10/25.</p>
+                       <p>P(Castaño | Chica) = (10/25) / (15/25) = 10/15 = 2/3.</p>
+                   </div>
+                    <div class="exercise">
+                       <h3>Ejercicio 6.1: Cálculo de P(A|B)</h3>
+                       <p class="mb-2">Se lanza un dado. A="sacar un 6", B="sacar par". Calcula P(A|B).</p>
+                       <input type="text" id="ex6_1_condicionada" class="input-field mb-2" placeholder="Fracción irreducible o decimal">
+                       <button onclick="checkEx6_1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex6_1" class="feedback"></div>
+                   </div>
+               </div>
+           </div>
+       </section>
+
+       <section id="sucesos-independientes-dependientes" class="concept-card">
+           <h2><i class="fas fa-link mr-2"></i>7. Sucesos Independientes y Dependientes</h2>
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-check-double mr-2"></i>Definición y Comprobación</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <p>Dos sucesos A y B son <strong>independientes</strong> si la ocurrencia de uno no afecta la probabilidad del otro. Es decir, P(A|B) = P(A).</p>
+                   <p>Si son independientes, se cumple: <strong class="text-indigo-600">P(A ∩ B) = P(A) * P(B)</strong>.</p>
+                   <p class="mt-1">Si no se cumple, son <strong>dependientes</strong>.</p>
+                    <div class="exercise">
+                       <h3>Ejercicio 7.1: Independencia</h3>
+                       <p class="mb-2">Se lanza una moneda dos veces. A="Cara en el 1er lanzamiento", B="Cruz en el 2º lanzamiento". P(A)=1/2, P(B)=1/2. P(A ∩ B) = P("Cara y luego Cruz") = 1/4. ¿Son A y B independientes?</p>
+                       <select id="ex7_1_indep" class="input-field mb-2">
+                           <option value="">Selecciona</option>
+                           <option value="si">Sí, son independientes</option>
+                           <option value="no">No, son dependientes</option>
+                       </select>
+                       <button onclick="checkEx7_1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex7_1" class="feedback"></div>
+                   </div>
+               </div>
+           </div>
+       </section>
+
+       <section id="diagramas-arbol" class="concept-card">
+           <h2><i class="fas fa-sitemap mr-2"></i>8. Diagramas de Árbol</h2>
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-route mr-2"></i>Visualizando Experimentos Compuestos</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <p>Los diagramas de árbol son muy útiles para visualizar y calcular probabilidades en experimentos compuestos (varias etapas).</p>
+                   <p class="mt-1">En cada rama se escribe la probabilidad del suceso correspondiente. La probabilidad de un camino completo es el producto de las probabilidades de sus ramas.</p>
+                   <div class="example">
+                       <p><strong>Ejemplo:</strong> Una urna contiene 2 bolas Rojas (R) y 3 Azules (A). Se extraen dos bolas SIN reemplazamiento.</p>
+                       <div class="tree-diagram">
+                           <div>
+                               <span class="tree-branch-label"><strong>1ª Extracción:</strong></span>
+                               <div class="tree-node">
+                                   <span class="tree-branch-label">P(R1) = 2/5 <i class="fas fa-circle text-red-500 ml-1"></i></span>
+                                   <div class="tree-node">
+                                       <span class="tree-branch-label">P(R2|R1) = 1/4 <i class="fas fa-circle text-red-500 ml-1"></i></span>
+                                       <span class="tree-path-prob">Camino R1-R2: P = 2/5 * 1/4 = 2/20</span>
+                                   </div>
+                                   <div class="tree-node">
+                                       <span class="tree-branch-label">P(A2|R1) = 3/4 <i class="fas fa-circle text-blue-500 ml-1"></i></span>
+                                       <span class="tree-path-prob">Camino R1-A2: P = 2/5 * 3/4 = 6/20</span>
+                                   </div>
+                               </div>
+                               <div class="tree-node">
+                                   <span class="tree-branch-label">P(A1) = 3/5 <i class="fas fa-circle text-blue-500 ml-1"></i></span>
+                                   <div class="tree-node">
+                                       <span class="tree-branch-label">P(R2|A1) = 2/4 <i class="fas fa-circle text-red-500 ml-1"></i></span>
+                                       <span class="tree-path-prob">Camino A1-R2: P = 3/5 * 2/4 = 6/20</span>
+                                   </div>
+                                   <div class="tree-node">
+                                       <span class="tree-branch-label">P(A2|A1) = 2/4 <i class="fas fa-circle text-blue-500 ml-1"></i></span>
+                                       <span class="tree-path-prob">Camino A1-A2: P = 3/5 * 2/4 = 6/20</span>
+                                   </div>
+                               </div>
+                           </div>
+                           <p class="mt-3 text-sm text-slate-600">Nota: La suma de probabilidades de todos los caminos finales debe ser 1 (2/20 + 6/20 + 6/20 + 6/20 = 20/20 = 1).</p>
+                       </div>
+                   </div>
+                    <div class="exercise">
+                       <h3>Ejercicio 8.1: Diagrama de Árbol</h3>
+                       <p class="mb-2">Usando el ejemplo anterior (2 Rojas, 3 Azules, extracción SIN reemplazamiento), ¿cuál es la probabilidad de que la segunda bola extraída sea Roja P(R2)? (Suma las probabilidades de los caminos que terminan en R2).</p>
+                       <input type="text" id="ex8_1_tree" class="input-field mb-2" placeholder="Fracción irreducible o decimal">
+                       <button onclick="checkEx8_1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar</button>
+                       <div id="feedback_ex8_1" class="feedback"></div>
+                   </div>
+               </div>
+           </div>
+       </section>
+       
+       <section id="glosario" class="concept-card">
+           <h2><i class="fas fa-book mr-2"></i>9. Glosario de Términos</h2>
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span><i class="fas fa-list-ul mr-2"></i>Definiciones Clave</span>
+                   <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+               </div>
+               <div class="accordion-content">
+                   <dl class="space-y-3">
+                       <div><dt class="font-semibold text-indigo-600">Experimento Aleatorio:</dt><dd class="ml-4 text-slate-700">Proceso con múltiples resultados posibles, cuyo resultado exacto no se puede predecir.</dd></div>
+                       <div><dt class="font-semibold text-indigo-600">Espacio Muestral (E):</dt><dd class="ml-4 text-slate-700">Conjunto de todos los resultados posibles de un experimento aleatorio.</dd></div>
+                       <div><dt class="font-semibold text-indigo-600">Suceso:</dt><dd class="ml-4 text-slate-700">Subconjunto del espacio muestral.</dd></div>
+                       <div><dt class="font-semibold text-indigo-600">Probabilidad P(A):</dt><dd class="ml-4 text-slate-700">Medida numérica (entre 0 y 1) de la posibilidad de que ocurra un suceso A.</dd></div>
+                       <div><dt class="font-semibold text-indigo-600">Sucesos Incompatibles:</dt><dd class="ml-4 text-slate-700">No pueden ocurrir simultáneamente (A ∩ B = Ø).</dd></div>
+                       <div><dt class="font-semibold text-indigo-600">Probabilidad Condicionada P(A|B):</dt><dd class="ml-4 text-slate-700">Probabilidad de A dado que B ha ocurrido.</dd></div>
+                       <div><dt class="font-semibold text-indigo-600">Sucesos Independientes:</dt><dd class="ml-4 text-slate-700">La ocurrencia de uno no afecta la probabilidad del otro. P(A ∩ B) = P(A)P(B).</dd></div>
+                   </dl>
+               </div>
+           </div>
+       </section>
+
+       <section id="quiz-final" class="concept-card bg-indigo-50 border-indigo-200">
+           <h2 class="text-indigo-700"><i class="fas fa-graduation-cap mr-2"></i>10. Quiz Final: Pon a Prueba tus Conocimientos</h2>
+           <div class="exercise">
+               <h3>Pregunta 1:</h3>
+               <p class="mb-2">En una baraja de 40 cartas, ¿cuál es la probabilidad de extraer una figura (Sota, Caballo o Rey)?</p>
+               <input type="text" id="quiz_q1" class="input-field mb-2" placeholder="Fracción irreducible o decimal">
+               <button onclick="checkQuizQ1()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar Q1</button>
+               <div id="feedback_quiz_q1" class="feedback"></div>
+           </div>
+           <div class="exercise mt-6">
+               <h3>Pregunta 2:</h3>
+               <p class="mb-2">Si P(A) = 0.6, P(B) = 0.4 y P(A ∩ B) = 0.2, ¿cuál es P(A U B)?</p>
+               <input type="text" id="quiz_q2" class="input-field mb-2" placeholder="Decimal">
+               <button onclick="checkQuizQ2()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar Q2</button>
+               <div id="feedback_quiz_q2" class="feedback"></div>
+           </div>
+            <div class="exercise mt-6">
+               <h3>Pregunta 3:</h3>
+               <p class="mb-2">Afirmación: "Si dos sucesos son incompatibles, entonces son dependientes." (Excepto si uno tiene probabilidad cero).</p>
+               <select id="quiz_q3_vf" class="input-field mb-2">
+                   <option value="">Selecciona</option>
+                   <option value="verdadero">Verdadero</option>
+                   <option value="falso">Falso</option>
+               </select>
+               <button onclick="checkQuizQ3()" class="btn btn-primary"><i class="fas fa-check"></i>Comprobar Q3</button>
+               <div id="feedback_quiz_q3" class="feedback"></div>
+           </div>
+       </section>
+
+       <footer class="text-center mt-16 py-8 border-t border-slate-300">
+           <p class="text-slate-600 text-lg">¡Felicidades por llegar hasta aquí! La probabilidad es una herramienta poderosa.</p>
+           <p class="text-sm text-slate-500 mt-2">© 2024 Aprende Probabilidad Avanzado - Contenido generado para fines educativos.</p>
+       </footer>
+   </div>
+
+<script>
+   // Funciones para los acordeones
+   document.querySelectorAll('.accordion-header').forEach(header => {
+       header.addEventListener('click', () => {
+           const content = header.nextElementSibling;
+           const icon = header.querySelector('.accordion-icon i');
+           header.classList.toggle('active');
+           if (content.style.display === 'block') {
+               content.style.display = 'none';
+               if(icon) { // Comprobar si el icono existe
+                   icon.classList.remove('fa-chevron-up');
+                   icon.classList.add('fa-chevron-down');
+               }
+           } else {
+               content.style.display = 'block';
+                if(icon) { // Comprobar si el icono existe
+                   icon.classList.remove('fa-chevron-down');
+                   icon.classList.add('fa-chevron-up');
+               }
+           }
+       });
+   });
+
+   function displayFeedback(elementId, message, type) { // type: 'correct', 'incorrect', 'hint'
+       const feedbackEl = document.getElementById(elementId);
+       feedbackEl.innerHTML = message; // Use innerHTML to allow for icons or bold text in feedback
+       feedbackEl.className = 'feedback ' + type;
+   }
+
+   function normalizeString(str) {
+       if (typeof str !== 'string') return '';
+       return str.toLowerCase().replace(/\s+/g, '').replace(/,/g, '.'); // Tratar coma como punto decimal
+   }
+   
+   function areFractionsEquivalent(userStr, correctFractionStr) {
+       try {
+           let userNum, userDen, corrNum, corrDen;
+           // Normalizar entrada del usuario para permitir comas o puntos como decimales
+           const normalizedUserStr = userStr.replace(',', '.');
+
+           if (normalizedUserStr.includes('/')) {
+               [userNum, userDen] = normalizedUserStr.split('/').map(Number);
+           } else {
+               userNum = parseFloat(normalizedUserStr);
+               userDen = 1;
+           }
+
+           [corrNum, corrDen] = correctFractionStr.split('/').map(Number);
+
+           if (isNaN(userNum) || isNaN(userDen) || isNaN(corrNum) || isNaN(corrDen) || userDen === 0 || corrDen === 0) {
+               return false;
+           }
+           // Comprobar igualdad aproximada para decimales y exacta para fracciones
+           return Math.abs(userNum / userDen - corrNum / corrDen) < 0.001; 
+       } catch (e) {
+           return false;
+       }
+   }
+   
+   function areDecimalsEquivalent(userStr, correctDecimal, tolerance = 0.01) {
+       try {
+           const normalizedUserStr = userStr.replace(',', '.');
+           const userVal = parseFloat(normalizedUserStr);
+           return Math.abs(userVal - correctDecimal) < tolerance;
+       } catch (e) {
+           return false;
+       }
+   }
+
+
+   // --- EJERCICIOS ---
+
+   function checkEx1_1() {
+       const answer = document.getElementById('ex1_1_tipo').value;
+       if (answer === 'aleatorio') {
+           displayFeedback('feedback_ex1_1', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! Aunque los modelos son sofisticados, la predicción meteorológica siempre tiene un componente de incertidumbre inherente.', 'correct');
+       } else if (answer === 'determinista') {
+           displayFeedback('feedback_ex1_1', '<i class="fas fa-times-circle mr-1"></i>Incorrecto. Los modelos meteorológicos son complejos y se basan en muchas variables, pero el clima es un sistema caótico con un grado de aleatoriedad.', 'incorrect');
+       } else {
+           displayFeedback('feedback_ex1_1', '<i class="fas fa-exclamation-triangle mr-1"></i>Por favor, selecciona una opción.', 'hint');
+       }
+   }
+
+   function checkEx1_2() {
+       const userAnswer = normalizeString(document.getElementById('ex1_2_suceso_cartas').value);
+       if (userAnswer === '4') {
+           displayFeedback('feedback_ex1_2', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! Hay 4 Ases en una baraja española (As de Oros, Copas, Espadas y Bastos).', 'correct');
+       } else {
+           displayFeedback('feedback_ex1_2', `<i class="fas fa-times-circle mr-1"></i>Incorrecto. Piensa cuántos palos tiene la baraja y que hay un As por palo. La respuesta es 4.`, 'incorrect');
+       }
+   }
+
+   function checkEx2_1() {
+       const vfAnswer = document.getElementById('ex2_1_vf').value;
+       const justificacion = document.getElementById('ex2_1_justificacion').value.trim();
+       if (vfAnswer === 'verdadero') {
+           if (justificacion.length > 5) { // Comprobación simple de que hay alguna justificación
+                displayFeedback('feedback_ex2_1', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! Un suceso y su contrario no pueden ocurrir a la vez (su intersección es vacía), por lo que son incompatibles. Además, su unión es el espacio muestral completo.', 'correct');
+           } else {
+                displayFeedback('feedback_ex2_1', '<i class="fas fa-info-circle mr-1"></i>La afirmación es verdadera. Intenta explicar por qué no pueden ocurrir A y Ā al mismo tiempo.', 'hint');
+           }
+       } else if (vfAnswer === 'falso') {
+           displayFeedback('feedback_ex2_1', '<i class="fas fa-times-circle mr-1"></i>Incorrecto. Un suceso y su contrario, por definición, no tienen elementos en común. Piensa en A="llueve" y Ā="no llueve".', 'incorrect');
+       } else {
+           displayFeedback('feedback_ex2_1', '<i class="fas fa-exclamation-triangle mr-1"></i>Por favor, selecciona verdadero o falso y justifica.', 'hint');
+       }
+   }
+   
+   function checkEx3_1() {
+       const userAnswer = normalizeString(document.getElementById('ex3_1_union_deportes').value);
+       // |F U B| = |F| + |B| - |F ∩ B| = 10 + 7 - 3 = 14
+       if (userAnswer === '14') {
+           displayFeedback('feedback_ex3_1', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! Usando el principio de inclusión-exclusión: 10 (F) + 7 (B) - 3 (ambos) = 14 estudiantes.', 'correct');
+       } else {
+           displayFeedback('feedback_ex3_1', `<i class="fas fa-times-circle mr-1"></i>Incorrecto. Recuerda la fórmula para la unión: |F U B| = |F| + |B| - |F ∩ B|. Sería 10 + 7 - 3.`, 'incorrect');
+       }
+   }
+
+   function checkEx4_1() {
+       const userAnswerRaw = document.getElementById('ex4_1_morgan').value;
+       // Normalizar para la comparación: quitar espacios, convertir a minúsculas,
+       // y estandarizar los operadores (U para unión, I para intersección, ~ para contrario)
+       const userAnswer = userAnswerRaw.toLowerCase().replace(/\s+/g, '')
+                                      .replace(/u/g, 'U').replace(/unión/g, 'U')
+                                      .replace(/i/g, 'I').replace(/intersección/g, 'I').replace(/∩/g, 'I').replace(/ interseccion /g, 'I')
+                                      .replace(/contrario de /g, '~').replace(/~/g, '~').replace(/no /g, '~');
+       
+       const correctAnswers = ["AIB", "A I B", "A∩B"]; // Aceptar con o sin espacio para "A I B"
+       
+       if (correctAnswers.some(ans => ans.toLowerCase().replace(/\s+/g, '') === userAnswer)) {
+           displayFeedback('feedback_ex4_1', '<i class="fas fa-check-circle mr-1"></i>¡Excelente! $\overline{\overline{A} \cup \overline{B}} = \overline{\overline{A}} \cap \overline{\overline{B}} = A \cap B$.', 'correct');
+       } else {
+           displayFeedback('feedback_ex4_1', `<i class="fas fa-times-circle mr-1"></i>No es del todo correcto. Aplica la primera ley de Morgan al paréntesis exterior: $\overline{X \cup Y} = \overline{X} \cap \overline{Y}$. Aquí $X=\overline{A}$ e $Y=\overline{B}$. Luego simplifica los dobles contrarios. La respuesta es A ∩ B (o A I B).`, 'incorrect');
+       }
+   }
+
+   function checkEx5_1() {
+       const userAnswer = document.getElementById('ex5_1_laplace').value;
+       // Primos en un dado de 6 caras: {2, 3, 5}. Casos favorables = 3. Casos posibles = 6. P = 3/6 = 1/2.
+       if (areFractionsEquivalent(userAnswer, "1/2") || areDecimalsEquivalent(userAnswer, 0.5)) {
+           displayFeedback('feedback_ex5_1', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! Los números primos en un dado son 2, 3, 5 (3 casos favorables). Hay 6 casos posibles. P = 3/6 = 1/2.', 'correct');
+       } else {
+           displayFeedback('feedback_ex5_1', '<i class="fas fa-times-circle mr-1"></i>Incorrecto. Los primos son {2, 3, 5}. Casos favorables = 3. Casos posibles = 6. La probabilidad es 3/6.', 'incorrect');
+       }
+   }
+
+   function checkEx6_1() {
+       const userAnswer = document.getElementById('ex6_1_condicionada').value;
+       // A="sacar 6"={6}. B="sacar par"={2,4,6}. A ∩ B = {6}. P(A∩B)=1/6. P(B)=3/6. P(A|B)=(1/6)/(3/6)=1/3.
+       if (areFractionsEquivalent(userAnswer, "1/3") || areDecimalsEquivalent(userAnswer, 0.333, 0.001)) {
+           displayFeedback('feedback_ex6_1', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! P(A|B) = P(A ∩ B) / P(B) = (1/6) / (3/6) = 1/3.', 'correct');
+       } else {
+           displayFeedback('feedback_ex6_1', '<i class="fas fa-times-circle mr-1"></i>Incorrecto. A={6}, B={2,4,6}. A∩B={6}. P(A∩B)=1/6, P(B)=3/6. Calcula (1/6)/(3/6).', 'incorrect');
+       }
+   }
+   
+   function checkEx7_1() {
+       const answer = document.getElementById('ex7_1_indep').value;
+       if (answer === 'si') {
+           displayFeedback('feedback_ex7_1', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! P(A ∩ B) = 1/4. P(A) * P(B) = (1/2) * (1/2) = 1/4. Como son iguales, son independientes.', 'correct');
+       } else if (answer === 'no') {
+           displayFeedback('feedback_ex7_1', '<i class="fas fa-times-circle mr-1"></i>Incorrecto. Comprueba si P(A ∩ B) = P(A) * P(B). En este caso, 1/4 = (1/2)*(1/2).', 'incorrect');
+       } else {
+           displayFeedback('feedback_ex7_1', '<i class="fas fa-exclamation-triangle mr-1"></i>Selecciona una opción.', 'hint');
+       }
+   }
+
+   function checkEx8_1() {
+       const userAnswer = document.getElementById('ex8_1_tree').value;
+       // P(R2) = P(R1∩R2) + P(A1∩R2) = (2/5 * 1/4) + (3/5 * 2/4) = 2/20 + 6/20 = 8/20 = 2/5
+       if (areFractionsEquivalent(userAnswer, "2/5") || areDecimalsEquivalent(userAnswer, 0.4)) {
+           displayFeedback('feedback_ex8_1', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! P(R2) = P(R1)P(R2|R1) + P(A1)P(R2|A1) = (2/5)(1/4) + (3/5)(2/4) = 2/20 + 6/20 = 8/20 = 2/5.', 'correct');
+       } else {
+           displayFeedback('feedback_ex8_1', '<i class="fas fa-times-circle mr-1"></i>Incorrecto. Suma las probabilidades de los caminos que terminan en R2: (2/5 * 1/4) + (3/5 * 2/4).', 'incorrect');
+       }
+   }
+
+   // --- QUIZ FINAL ---
+   function checkQuizQ1() {
+       const userAnswer = document.getElementById('quiz_q1').value;
+       // Figuras: Sota, Caballo, Rey. Hay 3 por palo. 4 palos. Total figuras = 3 * 4 = 12.
+       // P(Figura) = 12/40 = 3/10.
+       if (areFractionsEquivalent(userAnswer, "3/10") || areDecimalsEquivalent(userAnswer, 0.3)) {
+           displayFeedback('feedback_quiz_q1', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! Hay 12 figuras (3 por palo x 4 palos) en 40 cartas. P = 12/40 = 3/10.', 'correct');
+       } else {
+           displayFeedback('feedback_quiz_q1', '<i class="fas fa-times-circle mr-1"></i>Revisa el cálculo. Hay 12 figuras en total. La probabilidad es 12/40.', 'incorrect');
+       }
+   }
+
+   function checkQuizQ2() {
+       const userAnswer = document.getElementById('quiz_q2').value;
+       // P(A U B) = P(A) + P(B) - P(A ∩ B) = 0.6 + 0.4 - 0.2 = 0.8
+       if (areDecimalsEquivalent(userAnswer, 0.8)) {
+           displayFeedback('feedback_quiz_q2', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! P(A U B) = 0.6 + 0.4 - 0.2 = 0.8.', 'correct');
+       } else {
+           displayFeedback('feedback_quiz_q2', '<i class="fas fa-times-circle mr-1"></i>Usa la fórmula: P(A U B) = P(A) + P(B) - P(A ∩ B).', 'incorrect');
+       }
+   }
+   
+   function checkQuizQ3() {
+       const answer = document.getElementById('quiz_q3_vf').value;
+       if (answer === 'verdadero') {
+           displayFeedback('feedback_quiz_q3', '<i class="fas fa-check-circle mr-1"></i>¡Correcto! Si A y B son incompatibles, P(A ∩ B) = 0. Para que fueran independientes, P(A ∩ B) tendría que ser P(A)P(B). Si P(A)>0 y P(B)>0, entonces P(A)P(B)>0, lo que contradice P(A ∩ B)=0. Por lo tanto, son dependientes (saber que uno ocurre te dice que el otro no puede ocurrir).', 'correct');
+       } else if (answer === 'falso') {
+           displayFeedback('feedback_quiz_q3', '<i class="fas fa-times-circle mr-1"></i>Incorrecto. Piensa en la definición de independencia: P(A ∩ B) = P(A)P(B). Si son incompatibles, P(A ∩ B) = 0. ¿Puede 0 ser igual a P(A)P(B) si P(A) y P(B) son mayores que cero?', 'incorrect');
+       } else {
+           displayFeedback('feedback_quiz_q3', '<i class="fas fa-exclamation-triangle mr-1"></i>Selecciona una opción.', 'hint');
+       }
+   }
+
+</script>
+</body>
+</html>
